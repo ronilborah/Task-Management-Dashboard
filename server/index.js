@@ -9,8 +9,7 @@ const app = express();
 app.use(cors({
     origin: [
         'https://task-management-dashboard-e4yo7giub-ronil-borahs-projects.vercel.app',
-        'http://localhost:3000', // for local development
-        'https://*.vercel.app' // allow all Vercel domains
+        'http://localhost:3000'
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
