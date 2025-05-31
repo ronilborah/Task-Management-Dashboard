@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@hello-pangea/dnd": "^18.0.1",
+    "@react-oauth/google": "^0.12.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -10,6 +12,7 @@
     "animejs": "^4.0.2",
     "axios": "^1.9.0",
     "react": "^19.1.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^19.1.0",
     "react-scripts": "5.0.1",
     "react-toastify": "^11.0.5",
