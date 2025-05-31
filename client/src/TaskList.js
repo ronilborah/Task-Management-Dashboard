@@ -184,39 +184,14 @@ function TaskList() {
 
     // Request notification permission
     useEffect(() => {
-        if (Notification.permission === "default") {
+        if (typeof Notification !== 'undefined' && Notification.permission === "default") {
             Notification.requestPermission().then(permission => {
                 setNotificationsEnabled(permission === "granted");
             });
-        } else {
+        } else if (typeof Notification !== 'undefined') {
             setNotificationsEnabled(Notification.permission === "granted");
         }
     }, []);
-
-    // Task notifications
-    useEffect(() => {
-        if (!notificationsEnabled) return;
-
-        const checkDueTasks = () => {
-            const dueSoon = tasks.filter(task => {
-                if (!task.dueDate || task.status === 'completed') return false;
-                const dueDate = new Date(task.dueDate);
-                const now = new Date();
-                const timeDiff = dueDate - now;
-                return timeDiff > 0 && timeDiff < 24 * 60 * 60 * 1000;
-            });
-
-            dueSoon.forEach(task => {
-                new Notification(`Task Due Soon: ${task.title}`, {
-                    body: `Due: ${new Date(task.dueDate).toLocaleDateString()}`,
-                    icon: '/favicon.ico'
-                });
-            });
-        };
-
-        const interval = setInterval(checkDueTasks, 300000); // Check every 5 minutes
-        return () => clearInterval(interval);
-    }, [tasks, notificationsEnabled]);
 
     // Auto-save draft
     useEffect(() => {
@@ -228,12 +203,16 @@ function TaskList() {
     useEffect(() => {
         const draft = localStorage.getItem('taskDraft');
         if (draft) {
-            const { title, description, priority, dueDate, category } = JSON.parse(draft);
-            setTitle(title || '');
-            setDescription(description || '');
-            setPriority(priority || 'medium');
-            setDueDate(dueDate || new Date().toISOString().split("T")[0]);
-            setCategory(category || '');
+            try {
+                const { title, description, priority, dueDate, category } = JSON.parse(draft);
+                setTitle(title || '');
+                setDescription(description || '');
+                setPriority(priority || 'medium');
+                setDueDate(dueDate || new Date().toISOString().split("T")[0]);
+                setCategory(category || '');
+            } catch (e) {
+                console.error('Error loading draft:', e);
+            }
         }
     }, []);
 
@@ -292,7 +271,7 @@ function TaskList() {
         fetch(`${API_BASE}/api/tasks`)
             .then((res) => res.json())
             .then((data) => {
-                setTasks(data);
+                setTasks(Array.isArray(data) ? data : []);
                 setLoading(false);
             })
             .catch((err) => {
@@ -322,6 +301,7 @@ function TaskList() {
                     priority,
                     dueDate,
                     category,
+                    status: "pending",
                     createdAt: new Date().toISOString()
                 }),
             });
@@ -343,6 +323,8 @@ function TaskList() {
     const updateTask = async (id, field, value) => {
         try {
             const task = tasks.find((t) => t._id === id);
+            if (!task) return;
+
             const updatedTask = {
                 ...task,
                 [field]: value,
