@@ -57,8 +57,8 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Handle 404 routes
-app.use('*', (req, res) => {
+// Handle 404 routes - FIXED for Express 5
+app.use((req, res) => {
     res.status(404).json({ message: 'Route not found' });
 });
 
