@@ -4,6 +4,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import "./App.css";
 
+// API Base URL for production
+const API_BASE = 'https://task-management-dashboard-qq1p.onrender.com';
+
 const statusColors = {
     "pending": "#a5b4fc",
     "in progress": "#fbbf24",
@@ -130,15 +133,15 @@ const ProductivityInsights = ({ tasks }) => {
 
     return (
         <div className="insights-panel">
-            <h4> Productivity Insights</h4>
+            <h4>📊 Productivity Insights</h4>
             <div className="insight-item">
-                <span> Today: {completedToday} tasks</span>
+                <span>✅ Today: {completedToday} tasks</span>
             </div>
             <div className="insight-item">
-                <span> This week: {thisWeek} tasks</span>
+                <span>📅 This week: {thisWeek} tasks</span>
             </div>
             <div className="insight-item">
-                <span> Success rate: {tasks.length > 0 ? Math.round((tasks.filter(t => t.status === 'completed').length / tasks.length) * 100) : 0}%</span>
+                <span>🎯 Success rate: {tasks.length > 0 ? Math.round((tasks.filter(t => t.status === 'completed').length / tasks.length) * 100) : 0}%</span>
             </div>
         </div>
     );
@@ -286,7 +289,7 @@ function TaskList() {
 
     const fetchTasks = () => {
         setLoading(true);
-        fetch("http://localhost:8000/api/tasks")
+        fetch(`${API_BASE}/api/tasks`)
             .then((res) => res.json())
             .then((data) => {
                 setTasks(data);
@@ -310,7 +313,7 @@ function TaskList() {
             return;
         }
         try {
-            const res = await fetch("http://localhost:8000/api/tasks", {
+            const res = await fetch(`${API_BASE}/api/tasks`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -345,7 +348,7 @@ function TaskList() {
                 [field]: value,
                 updatedAt: new Date().toISOString()
             };
-            const res = await fetch(`http://localhost:8000/api/tasks/${id}`, {
+            const res = await fetch(`${API_BASE}/api/tasks/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedTask),
@@ -361,7 +364,7 @@ function TaskList() {
 
     const deleteTask = async (id) => {
         try {
-            const res = await fetch(`http://localhost:8000/api/tasks/${id}`, {
+            const res = await fetch(`${API_BASE}/api/tasks/${id}`, {
                 method: "DELETE",
             });
             if (!res.ok) throw new Error("Failed to delete task");
