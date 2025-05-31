@@ -286,7 +286,7 @@ function TaskList() {
 
     const fetchTasks = () => {
         setLoading(true);
-        fetch("https://task-management-dashboard-qq1p.onrender.com/api/tasks")
+        fetch("http://localhost:8000/api/tasks")
             .then((res) => res.json())
             .then((data) => {
                 setTasks(data);
@@ -310,7 +310,7 @@ function TaskList() {
             return;
         }
         try {
-            const res = await fetch("https://task-management-dashboard-qq1p.onrender.com/api/tasks", {
+            const res = await fetch("http://localhost:8000/api/tasks", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -345,7 +345,7 @@ function TaskList() {
                 [field]: value,
                 updatedAt: new Date().toISOString()
             };
-            const res = await fetch(`https://task-management-dashboard-qq1p.onrender.com/api/tasks/${id}`, {
+            const res = await fetch(`http://localhost:8000/api/tasks/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updatedTask),
@@ -361,7 +361,7 @@ function TaskList() {
 
     const deleteTask = async (id) => {
         try {
-            const res = await fetch(`https://task-management-dashboard-qq1p.onrender.com/api/tasks/${id}`, {
+            const res = await fetch(`http://localhost:8000/api/tasks/${id}`, {
                 method: "DELETE",
             });
             if (!res.ok) throw new Error("Failed to delete task");
