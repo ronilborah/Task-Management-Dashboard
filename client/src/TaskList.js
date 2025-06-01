@@ -4,8 +4,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import "./App.css";
 
-// API Base URL for production
-const API_BASE = 'https://task-management-dashboard-1-kyfn.onrender.com';
+// API Base URL - Fixed for production deployment
+const API_BASE = process.env.NODE_ENV === 'production'
+    ? 'https://task-management-dashboard-1-kyfn.onrender.com'
+    : process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 const statusColors = {
     "pending": "#a5b4fc",
@@ -266,19 +268,30 @@ function TaskList() {
         return () => document.removeEventListener('keydown', handleKeyPress);
     }, [tasks]);
 
-    const fetchTasks = () => {
+    const fetchTasks = async () => {
         setLoading(true);
-        fetch(`${API_BASE}/api/tasks`)
-            .then((res) => res.json())
-            .then((data) => {
-                setTasks(Array.isArray(data) ? data : []);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error("Failed to fetch tasks:", err);
-                toast.error("Failed to fetch tasks");
-                setLoading(false);
+        try {
+            console.log('Fetching from:', `${API_BASE}/api/tasks`);
+            const res = await fetch(`${API_BASE}/api/tasks`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                mode: 'cors',
             });
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+
+            const data = await res.json();
+            setTasks(Array.isArray(data) ? data : []);
+            setLoading(false);
+        } catch (err) {
+            console.error("Failed to fetch tasks:", err);
+            toast.error(`Failed to fetch tasks: ${err.message}`);
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -294,7 +307,10 @@ function TaskList() {
         try {
             const res = await fetch(`${API_BASE}/api/tasks`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                mode: 'cors',
                 body: JSON.stringify({
                     title,
                     description,
@@ -305,7 +321,11 @@ function TaskList() {
                     createdAt: new Date().toISOString()
                 }),
             });
-            if (!res.ok) throw new Error("Failed to add task");
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+
             setTitle("");
             setDescription("");
             setPriority("medium");
@@ -316,7 +336,7 @@ function TaskList() {
             toast.success("Task added successfully!");
         } catch (error) {
             console.error(error);
-            toast.error("Error adding task");
+            toast.error(`Error adding task: ${error.message}`);
         }
     };
 
@@ -332,15 +352,22 @@ function TaskList() {
             };
             const res = await fetch(`${API_BASE}/api/tasks/${id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                mode: 'cors',
                 body: JSON.stringify(updatedTask),
             });
-            if (!res.ok) throw new Error("Failed to update task");
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+
             fetchTasks();
             toast.success("Task updated");
         } catch (error) {
             console.error(error);
-            toast.error("Error updating task");
+            toast.error(`Error updating task: ${error.message}`);
         }
     };
 
@@ -348,13 +375,18 @@ function TaskList() {
         try {
             const res = await fetch(`${API_BASE}/api/tasks/${id}`, {
                 method: "DELETE",
+                mode: 'cors',
             });
-            if (!res.ok) throw new Error("Failed to delete task");
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! status: ${res.status}`);
+            }
+
             fetchTasks();
             toast.success("Task deleted");
         } catch (error) {
             console.error(error);
-            toast.error("Error deleting task");
+            toast.error(`Error deleting task: ${error.message}`);
         }
     };
 
