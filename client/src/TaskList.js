@@ -5,6 +5,8 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import "./App.css";
 import { PASTEL_COLORS } from "./ProjectList";
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+
 const statusColors = {
     "pending": "#a5b4fc",
     "in progress": "#fbbf24",

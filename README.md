@@ -2,6 +2,11 @@
 
 A modern, responsive task management application with project organization, drag-and-drop functionality, and dark mode support.
 
+## 🌐 Live Demo
+
+- **Frontend**: [https://task-management-system.vercel.app](https://task-management-system.vercel.app)
+- **Backend API**: [https://task-management-api.onrender.com](https://task-management-api.onrender.com)
+
 ## Features
 
 - **Project Management**: Create and organize tasks by projects
@@ -26,18 +31,23 @@ A modern, responsive task management application with project organization, drag
 - MongoDB with Mongoose
 - CORS enabled for cross-origin requests
 
-## Setup Instructions
+## 🚀 Quick Start
 
-### Prerequisites
+### Option 1: Use the Live Demo
+Visit [https://task-management-system.vercel.app](https://task-management-system.vercel.app) to start using the application immediately.
+
+### Option 2: Local Development
+
+#### Prerequisites
 - Node.js (v16 or higher)
 - MongoDB (local or cloud instance)
 
-### Installation
+#### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd TaskManagementSystemUpgrade
+   git clone https://github.com/ronilborah/Task-Management-System.git
+   cd Task-Management-System
    ```
 
 2. **Install dependencies**
@@ -79,7 +89,7 @@ A modern, responsive task management application with project organization, drag
    
    Open your browser and navigate to `http://localhost:3000`
 
-## Usage
+## 📖 Usage
 
 ### Creating Projects
 1. Click the "+ Add Project" button in the sidebar
@@ -100,7 +110,7 @@ A modern, responsive task management application with project organization, drag
 - **Task Actions**: Edit, delete, or mark tasks as complete
 - **Search**: Use the search bar to find tasks by title or description
 
-## API Endpoints
+## 🔧 API Endpoints
 
 - `GET /api/tasks` - Get all tasks
 - `GET /api/tasks/project/:projectId` - Get tasks by project
@@ -109,14 +119,30 @@ A modern, responsive task management application with project organization, drag
 - `DELETE /api/tasks/:id` - Delete a task
 - `DELETE /api/tasks/project/:projectId` - Delete all tasks for a project
 
-## Contributing
+## 🚀 Deployment
+
+This application is deployed using:
+- **Frontend**: Vercel (React hosting)
+- **Backend**: Render (Node.js hosting)
+- **Database**: MongoDB Atlas (cloud database)
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## License
+## 📄 License
 
-This project is licensed under the ISC License. 
+This project is licensed under the ISC License.
+
+## 🙏 Acknowledgments
+
+- Built with React and Node.js
+- Styled with modern CSS
+- Deployed on Vercel and Render
+- Database powered by MongoDB Atlas 

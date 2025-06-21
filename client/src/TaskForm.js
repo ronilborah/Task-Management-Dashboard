@@ -6,12 +6,14 @@ function TaskForm({ onTaskAdded }) {
     const [description, setDescription] = useState("");
     const [priority, setPriority] = useState("medium");
 
+    const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!title) return;
 
         try {
-            await axios.post("http://localhost:8000/api/tasks", {
+            await axios.post(`${API_BASE_URL}/api/tasks`, {
                 title,
                 description,
                 priority,
