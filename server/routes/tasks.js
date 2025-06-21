@@ -5,7 +5,17 @@ const Task = require('../models/Task');
 // Get all tasks
 router.get('/', async (req, res) => {
     try {
-        const tasks = await Task.find();
+        const tasks = await Task.find().sort({ createdAt: -1 });
+        res.json(tasks);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Get tasks by project
+router.get('/project/:projectId', async (req, res) => {
+    try {
+        const tasks = await Task.find({ projectId: req.params.projectId }).sort({ createdAt: -1 });
         res.json(tasks);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -14,9 +24,25 @@ router.get('/', async (req, res) => {
 
 // Create a new task
 router.post('/', async (req, res) => {
-    const { title, description, status, priority, dueDate } = req.body;
-    const task = new Task({ title, description, status, priority, dueDate });
     try {
+        const { title, description, status, priority, projectId, assignee, dueDate } = req.body;
+
+        if (!title || !projectId) {
+            return res.status(400).json({ message: 'Title and projectId are required' });
+        }
+
+        const task = new Task({
+            title,
+            description,
+            status,
+            priority,
+            projectId,
+            assignee,
+            dueDate,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        });
+
         const newTask = await task.save();
         res.status(201).json(newTask);
     } catch (err) {
@@ -27,7 +53,13 @@ router.post('/', async (req, res) => {
 // Update a task
 router.put('/:id', async (req, res) => {
     try {
-        const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updateData = { ...req.body, updatedAt: new Date() };
+        const updatedTask = await Task.findByIdAndUpdate(req.params.id, updateData, { new: true });
+
+        if (!updatedTask) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
         res.json(updatedTask);
     } catch (err) {
         res.status(400).json({ message: err.message });
@@ -37,8 +69,23 @@ router.put('/:id', async (req, res) => {
 // Delete a task
 router.delete('/:id', async (req, res) => {
     try {
-        await Task.findByIdAndDelete(req.params.id);
-        res.json({ message: 'Task deleted' });
+        const deletedTask = await Task.findByIdAndDelete(req.params.id);
+
+        if (!deletedTask) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+
+        res.json({ message: 'Task deleted successfully' });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// Delete all tasks for a project
+router.delete('/project/:projectId', async (req, res) => {
+    try {
+        await Task.deleteMany({ projectId: req.params.projectId });
+        res.json({ message: 'All tasks for project deleted successfully' });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
